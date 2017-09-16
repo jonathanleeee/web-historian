@@ -46,17 +46,27 @@ exports.addUrlToList = function(url, callback) {
 exports.isUrlArchived = function(url, callback) {
 };
 
-exports.downloadUrls = function(urls) {
-  var url = urls;
-  var file = fs.createWriteStream(__dirname + '/../archives/sites/' + url + '.html');
-  var request = http.get('http://www.' + url + '.com/', function(response) {
-    console.log(response);
-    response.pipe(file);
+exports.downloadUrls = function(urls, callback) {
+  // var urls = [].slice.call(arguments);
+  // urls = urls.slice(0, urls.length - 1);
+  console.log(urls);
+  console.log('This is the callback',callback);
+  urls.forEach(function(url) {
+    var file = fs.createWriteStream(__dirname + '/../archives/sites/' + url + '.html');
+    var request = http.get('http://www.' + url + '.com/', function(response) {
+      console.log(response);
+      response.pipe(file);
+      callback(null, 'ok');
+    });
   });
 };
 
-
-
+// var arr = ['google', 'amazon', 'ebay'];
+// exports.downloadUrls(['google', 'amazon', 'ebay'], function(error, success) {
+//   if (success) {
+//     console.log('success!!!!');
+//   }
+// });
 
 
 

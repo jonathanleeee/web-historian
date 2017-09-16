@@ -51,7 +51,7 @@ exports.handleRequest = function (req, res) {
           bodyWithOutUrlPrefix = body.slice(4);
           storedUrls.forEach(function(url) {  
             console.log('url: ', url, 'bodyWithOutUrlPrefix: ', bodyWithOutUrlPrefix);
-            if (url === bodyWithOutUrlPrefix) {
+            if (url === bodyWithOutUrlPrefix.toUpperCase()) {
               console.log('theyre the same');
               urlIsSaved = true;
             } 
@@ -71,7 +71,7 @@ exports.handleRequest = function (req, res) {
             }); 
             // console.log('data!!!!', Array.isArray(storedUrls), typeof body);
             // console.log(body)
-            body = body.slice(4);
+            body = body.slice(4).toUpperCase();
             storedUrls.push(body);
             // console.log(storedUrls.join('\n'));
             fs.writeFile(__dirname + '/../archives/sites.txt', storedUrls.join('\n'), function(error) {
