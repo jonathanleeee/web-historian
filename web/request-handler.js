@@ -4,7 +4,7 @@ var fs = require('fs');
 // require more modules/folders here!
 
 exports.handleRequest = function (req, res) {
-  // res.end(archive.paths.list);
+  // res.end( archive.paths.list);
   console.log('METHOD', req.method, req.url);
   if ( req.method === 'GET' && req.url === '/') {
     console.log('first request');
@@ -29,29 +29,37 @@ exports.handleRequest = function (req, res) {
     });
 
   } else if (req.method === 'POST' && req.url === '/') {
+    //collect the data that was sent from the server
     var body = [];
     req.on('data', (chunk) => {
       body.push(chunk);
     }).on('end', () => {
       body = Buffer.concat(body).toString();
       // console.log('BODY',typeof body);
+
+    // invoke the helper function readListOfUrls
       archive.readListOfUrls(function(error, data) {
         if (error) {
           console.log('There was an error:', error);
         } else {
 
 
-
+          //store the data in a variable
           var storedUrls = data.toString().split('\n');
           // console.log('yup',storedUrls);
           var urlIsSaved = false;
-          storedUrls.forEach(function(url) {
-            if (url === body) {
+          bodyWithOutUrlPrefix = body.slice(4);
+          storedUrls.forEach(function(url) {  
+            console.log('url: ', url, 'bodyWithOutUrlPrefix: ', bodyWithOutUrlPrefix);
+            if (url === bodyWithOutUrlPrefix) {
+              console.log('theyre the same');
               urlIsSaved = true;
             } 
           });
+          //check if the url in question is saved
           if (!urlIsSaved) {
             console.log('is not saved');
+            // retrieve the loading.html page and send it back to the client
             fs.readFile(__dirname + '/public/loading.html', function(error, data) {
               if (error) {
                 console.log('There was an error:', error);
@@ -75,17 +83,29 @@ exports.handleRequest = function (req, res) {
             });       
           } else {
             body = body.slice(4);
-            urlFileName = body.slice(0, body.length - 4);
-            fs.readFile(__dirname + '/../archives/' + urlFileName, function(error, data) {
+            body = body.slice(0, body.length - 4);
+            console.log('body', body);
+            fs.readFile(__dirname + '/../archives/sites/' + body + '.html', function(error, data) {
               if (error) {
-                console.log('There was an error:', error);
+                console.log('there was an error', error);
               } else {
                 res.writeHead(200, {'Content-Type': 'text'});
                 res.end(data);
-              }    
+              }
             });
-            //get the saved file from the sites directory and send it to the client
           }
+          //   body = body.slice(4);
+          //   urlFileName = body.slice(0, body.length - 4);
+          //   fs.readFile(__dirname + '/../archives/' + urlFileName, function(error, data) {
+          //     if (error) {
+          //       console.log('There was an error:', error);
+          //     } else {
+          //       res.writeHead(200, {'Content-Type': 'text'});
+          //       res.end(data);
+          //     }    
+          //   });
+          //   //get the saved file from the sites directory and send it to the client
+          // }
           //check if urlIsSaved is true
               //if it is, find the html file in archive and send it to the client
           //else, tell the client we don't have it yet and store the url in sites.txt
