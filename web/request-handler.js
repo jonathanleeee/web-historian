@@ -31,12 +31,13 @@ exports.handleRequest = function (req, res) {
       body.push(chunk);
     }).on('end', () => {
       body = Buffer.concat(body).toString();
-      console.log('BODY',typeof body);
+      // console.log('BODY',typeof body);
       archive.readListOfUrls(function(error, data) {
         if (error) {
           console.log('There was an error:', error);
         } else {
           var storedUrls = data.toString().split('\n');
+          // console.log('yup',storedUrls);
           var urlIsSaved = false;
           storedUrls.forEach(function(url) {
             if (url === body) {
@@ -51,7 +52,19 @@ exports.handleRequest = function (req, res) {
                 res.writeHead(200, {'Content-Type': 'text'});
                 res.end(data);
               }    
-            });        
+            }); 
+            // console.log('data!!!!', Array.isArray(storedUrls), typeof body);
+            storedUrls.push(body);
+            // console.log(storedUrls.join('\n'));
+            fs.writeFile(__dirname + '/../archives/sites.txt', storedUrls.join('\n'), function(error) {
+              if (error) {
+                console.log('there was an error', error);
+              } else {
+                console.log('url added!');
+              }
+            });       
+          } else {
+            
           }
           //check if urlIsSaved is true
               //if it is, find the html file in archive and send it to the client
