@@ -26,9 +26,17 @@ exports.initialize = function(pathsObj) {
 // modularize your code. Keep it clean!
 
 exports.readListOfUrls = function(callback) {
+  fs.readFile(__dirname + '/../archives/sites.txt', function(error, data) {
+    if (error) {
+      callback(error, null);
+    } else {
+      callback(null, data);
+    }
+  });
 };
 
 exports.isUrlInList = function(url, callback) {
+
 };
 
 exports.addUrlToList = function(url, callback) {
