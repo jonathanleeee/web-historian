@@ -2,6 +2,7 @@ var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
 var http = require('http');
+var worker = require('../workers/htmlfetcher');
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -52,9 +53,10 @@ exports.downloadUrls = function(urls, callback) {
   console.log(urls);
   console.log('This is the callback',callback);
   urls.forEach(function(url) {
+    url = url.slice(0, url.length - 4);
     var file = fs.createWriteStream(__dirname + '/../archives/sites/' + url + '.html');
     var request = http.get('http://www.' + url + '.com/', function(response) {
-      console.log(response);
+      // console.log(response);
       response.pipe(file);
       callback(null, 'ok');
     });
@@ -67,6 +69,8 @@ exports.downloadUrls = function(urls, callback) {
 //     console.log('success!!!!');
 //   }
 // });
+
+setInterval(worker.workerFunction, 1000);
 
 
 

@@ -51,7 +51,7 @@ exports.handleRequest = function (req, res) {
           bodyWithOutUrlPrefix = body.slice(4);
           storedUrls.forEach(function(url) {  
             console.log('url: ', url, 'bodyWithOutUrlPrefix: ', bodyWithOutUrlPrefix);
-            if (url === bodyWithOutUrlPrefix.toUpperCase()) {
+            if (url === bodyWithOutUrlPrefix) {  //had a to upperCase for bodyWithoutPrefix
               console.log('theyre the same');
               urlIsSaved = true;
             } 
@@ -82,6 +82,7 @@ exports.handleRequest = function (req, res) {
               }
             });       
           } else {
+            console.log('it is saved');
             body = body.slice(4);
             body = body.slice(0, body.length - 4);
             console.log('body', body);
@@ -113,10 +114,13 @@ exports.handleRequest = function (req, res) {
           // res.end();
         }
       });
-      
+        
     
 
 
     });
   }
 };
+
+
+
